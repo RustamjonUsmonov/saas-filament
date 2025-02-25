@@ -55,7 +55,8 @@ class UserResource extends Resource
                 Tables\Columns\TextColumn::make('phone')
                     ->searchable(),
                 Tables\Columns\IconColumn::make('email_verified_at')
-                    ->label(__('Email verified'))->alignCenter()
+                    ->label(__('Email verified'))
+                    ->alignCenter()
                     ->trueColor('info')
                     ->boolean(),
                 Tables\Columns\TextColumn::make('created_at')
