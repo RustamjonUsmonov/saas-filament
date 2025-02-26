@@ -4,8 +4,10 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\ProductCategoryResource\Pages;
 use App\Filament\Resources\ProductCategoryResource\RelationManagers;
+use App\Filament\Tables\Columns\BadgesColumn;
 use App\Models\ProductCategory;
 use Filament\Forms;
+use Filament\Forms\Components\Repeater;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Support\Colors\Color;
@@ -26,11 +28,47 @@ class ProductCategoryResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('name')
-                    ->required()
-                    ->maxLength(255),
-                Forms\Components\Select::make('parent_id')
-                    ->relationship('parent', 'name'),
+                Forms\Components\Grid::make([
+                    'default' => 1,
+                    'sm' => 1,
+                    'md' => 3,
+                    'lg' => 3,
+                    'xl' => 3,
+                ])->schema([
+                    Forms\Components\Section::make('Basic Information')
+                        ->schema([
+                            Forms\Components\TextInput::make('name')
+                                ->required()
+                                ->maxLength(255),
+                            Forms\Components\Select::make('parent_id')
+                                ->relationship('parent', 'name')
+                                ->label('Parent Category'),
+                        ])
+                        ->columnSpan([
+                            'default' => 1,
+                            'md' => 1,
+                        ]),
+
+                    Forms\Components\Section::make('Child Categories')
+                        ->schema([
+                            Repeater::make('children')
+                                ->relationship('children')
+                                ->schema([
+                                    Forms\Components\TextInput::make('name')
+                                        ->required()
+                                        ->maxLength(255),
+                                ])
+                                ->addable(true)
+                                ->deletable(true)
+                                ->collapsible()
+                                ->itemLabel(fn (array $state): ?string =>
+                                    $state['name'] ?? null),
+                        ])
+                        ->columnSpan([
+                            'default' => 1,
+                            'md' => 2,
+                        ]),
+                ]),
             ]);
     }
 
@@ -42,6 +80,15 @@ class ProductCategoryResource extends Resource
                     ->badge()->color(Color::Amber)
                     ->searchable(),
                 Tables\Columns\TextColumn::make('parent.name')
+                    ->badge()
+                    ->sortable(),
+                BadgesColumn::make('children.name')
+                    ->label('Subcategories')
+                    ->toggleable(isToggledHiddenByDefault: true)
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('children_count')
+                    ->label('Subcategories')
+                    ->counts('children')
                     ->badge()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('created_at')
