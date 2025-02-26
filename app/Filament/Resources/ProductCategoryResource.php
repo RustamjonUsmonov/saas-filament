@@ -19,6 +19,7 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 class ProductCategoryResource extends Resource
 {
     protected static ?string $model = ProductCategory::class;
+    protected static ?int $navigationSort = 1;
 
     protected static ?string $navigationIcon = 'heroicon-o-clipboard';
     protected static ?string $navigationGroup = 'Product Management';
@@ -52,6 +53,7 @@ class ProductCategoryResource extends Resource
                     Forms\Components\Section::make('Child Categories')
                         ->schema([
                             Repeater::make('children')
+                                ->hiddenLabel()
                                 ->relationship('children')
                                 ->schema([
                                     Forms\Components\TextInput::make('name')
@@ -89,6 +91,7 @@ class ProductCategoryResource extends Resource
                 Tables\Columns\TextColumn::make('children_count')
                     ->label('Subcategories')
                     ->counts('children')
+                    ->alignCenter()
                     ->badge()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('created_at')

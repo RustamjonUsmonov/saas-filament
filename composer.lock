@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "e4a9e06158f7b3f233b9ced6ecab5568",
+    "content-hash": "ed93b2fc74933e987bd73a7b5f8fd330",
     "packages": [
         {
             "name": "anourvalar/eloquent-serialize",
@@ -437,6 +437,77 @@
                 }
             ],
             "time": "2024-02-09T16:56:22+00:00"
+        },
+        {
+            "name": "codeat3/blade-phosphor-icons",
+            "version": "2.3.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/codeat3/blade-phosphor-icons.git",
+                "reference": "2812a27ec642359344429d344c7f7bbdfad489ce"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/codeat3/blade-phosphor-icons/zipball/2812a27ec642359344429d344c7f7bbdfad489ce",
+                "reference": "2812a27ec642359344429d344c7f7bbdfad489ce",
+                "shasum": ""
+            },
+            "require": {
+                "blade-ui-kit/blade-icons": "^1.1",
+                "illuminate/support": "^8.0|^9.0|^10.0|^11.0|^12.0",
+                "php": "^7.4|^8.0"
+            },
+            "require-dev": {
+                "codeat3/blade-icon-generation-helpers": "^0.10",
+                "codeat3/phpcs-styles": "^1.0",
+                "orchestra/testbench": "^6.0|^7.0|^8.0|^9.0|^10.0",
+                "phpunit/phpunit": "^9.0|^10.5|^11.0"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Codeat3\\BladePhosphorIcons\\BladePhosphorIconsServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Codeat3\\BladePhosphorIcons\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Swapnil Sarwe",
+                    "homepage": "https://swapnilsarwe.com"
+                },
+                {
+                    "name": "Dries Vints",
+                    "homepage": "https://driesvints.com"
+                }
+            ],
+            "description": "A package to easily make use of \"Phosphor Icons\" in your Laravel Blade views.",
+            "homepage": "https://github.com/codeat3/blade-phosphor-icons",
+            "keywords": [
+                "blade",
+                "laravel",
+                "phosphor-icons"
+            ],
+            "support": {
+                "issues": "https://github.com/codeat3/blade-phosphor-icons/issues",
+                "source": "https://github.com/codeat3/blade-phosphor-icons/tree/2.3.0"
+            },
+            "funding": [
+                {
+                    "url": "https://github.com/swapnilsarwe",
+                    "type": "github"
+                }
+            ],
+            "time": "2025-02-25T06:29:09+00:00"
         },
         {
             "name": "danharrin/date-format-converter",
@@ -1068,6 +1139,63 @@
                 }
             ],
             "time": "2024-12-27T00:36:43+00:00"
+        },
+        {
+            "name": "filafly/phosphor-icon-replacement",
+            "version": "v1.0.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/filafly/phosphor-icon-replacement.git",
+                "reference": "914d38ca7e28feecf5aa7c30018e1ea4b3734265"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/filafly/phosphor-icon-replacement/zipball/914d38ca7e28feecf5aa7c30018e1ea4b3734265",
+                "reference": "914d38ca7e28feecf5aa7c30018e1ea4b3734265",
+                "shasum": ""
+            },
+            "require": {
+                "codeat3/blade-phosphor-icons": "^2.2",
+                "filament/filament": "^3.2.3",
+                "illuminate/support": "*",
+                "php": "^8.1",
+                "spatie/laravel-package-tools": "^1.9"
+            },
+            "require-dev": {
+                "laravel/pint": "^1.20"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Filafly\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Nolan Nordlund",
+                    "email": "nolan@filafly.com",
+                    "homepage": "https://www.filafly.com/",
+                    "role": "Developer"
+                }
+            ],
+            "description": "Replace the default Filament icons with Phosphor icons.",
+            "homepage": "https://filafly.com/packages/phosphor-icon-replacement",
+            "keywords": [
+                "Phosphor",
+                "filament",
+                "icons",
+                "laravel",
+                "replace"
+            ],
+            "support": {
+                "issues": "https://github.com/filafly/phosphor-icon-replacement/issues",
+                "source": "https://github.com/filafly/phosphor-icon-replacement/tree/v1.0.1"
+            },
+            "time": "2025-02-04T23:01:55+00:00"
         },
         {
             "name": "filament/actions",

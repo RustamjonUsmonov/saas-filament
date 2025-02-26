@@ -17,6 +17,7 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 class ProductResource extends Resource
 {
     protected static ?string $model = Product::class;
+    protected static ?int $navigationSort = 2;
 
     protected static ?string $navigationIcon = 'heroicon-o-cube';
 
@@ -123,6 +124,13 @@ class ProductResource extends Resource
                     Tables\Actions\ForceDeleteBulkAction::make(),
                     Tables\Actions\RestoreBulkAction::make(),
                 ]),
+            ])
+            ->emptyStateIcon('heroicon-o-shopping-bag')
+            ->emptyStateHeading('No Products Found')
+            ->emptyStateDescription('Create your first product to get started.')
+            ->emptyStateActions([
+                Tables\Actions\CreateAction::make()
+                    ->label('Add Product'),
             ]);
     }
 

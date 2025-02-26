@@ -21,28 +21,57 @@ class UserResource extends Resource
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
     protected static ?string $navigationGroup = 'User Management';
 
+
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('name')
-                    ->required()
-                    ->maxLength(255),
-                Forms\Components\TextInput::make('email')
-                    ->email()
-                    ->required()
-                    ->maxLength(255),
-                Forms\Components\TextInput::make('phone')
-                    ->tel()
-                    ->required()
-                    ->maxLength(255),
-                Forms\Components\DateTimePicker::make('email_verified_at'),
-                Forms\Components\TextInput::make('password')
-                    ->password()
-                    ->required()
-                    ->maxLength(255),
+                // First section with grid layout
+                Forms\Components\Section::make('Personal Information') // Section title
+                ->schema([
+                    Forms\Components\Grid::make(2) // 2 columns
+                    ->schema([
+                        Forms\Components\TextInput::make('name')
+                            ->label('Full Name')
+                            ->required()
+                            ->maxLength(255),
+
+                        Forms\Components\TextInput::make('email')
+                            ->label('Email Address')
+                            ->email()
+                            ->required()
+                            ->maxLength(255),
+                    ]),
+
+                    Forms\Components\Grid::make(2) // Another 2-column grid for other fields
+                    ->schema([
+                        Forms\Components\TextInput::make('phone')
+                            ->label('Phone Number')
+                            ->tel()
+                            ->required()
+                            ->maxLength(255),
+
+                        Forms\Components\DateTimePicker::make('email_verified_at')
+                            ->label('Email Verified At')
+                            ->required(),
+                    ]),
+                ]),
+
+                // Second section with grid layout
+                Forms\Components\Section::make('Account Details') // Section title
+                ->schema([
+                    Forms\Components\Grid::make(1) // Single column for password
+                    ->schema([
+                        Forms\Components\TextInput::make('password')
+                            ->label('Password')
+                            ->password()
+                            ->required()
+                            ->maxLength(255),
+                    ]),
+                ]),
             ]);
     }
+
 
     public static function table(Table $table): Table
     {

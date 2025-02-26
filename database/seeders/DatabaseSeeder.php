@@ -20,5 +20,7 @@ class DatabaseSeeder extends Seeder
             'email' => 'test@example.com',
             'phone' => '79274486977',
         ]);
+
+        $this->call([ProductAttributesSeeder::class]);
     }
 }
