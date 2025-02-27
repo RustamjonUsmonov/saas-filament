@@ -4,10 +4,9 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\ProductResource\Pages;
 use App\Filament\Resources\ProductResource\RelationManagers;
+use App\Filament\Tables\Columns\BadgesColumn;
 use App\Models\Product;
 use Filament\Forms;
-use Filament\Forms\Components\Textarea;
-use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Infolists\Components\Grid;
 use Filament\Infolists\Components\RepeatableEntry;
@@ -16,10 +15,8 @@ use Filament\Infolists\Components\TextEntry;
 use Filament\Infolists\Components\TextEntry\TextEntrySize;
 use Filament\Infolists\Infolist;
 use Filament\Resources\Resource;
-use Filament\Support\Colors\Color;
-use Filament\Support\View\Components\Modal;
-use Filament\Tables\Actions\Action;
 use Filament\Tables;
+use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
@@ -75,14 +72,25 @@ class ProductResource extends Resource
                                 ->minValue(0)
                                 ->required()
                                 ->numeric(),
-
-                            Forms\Components\Radio::make('product_status_id')
-                                ->label('Product Status')
-                                ->options(fn() => \App\Models\ProductStatus::pluck('name', 'id'))
-                                ->required()
-                                ->columns(3) // Arrange in 3 columns for better spacing
                         ]),
+                         Forms\Components\Radio::make('product_status_id')
+                             ->label('Product Status')
+                             ->options(fn() => \App\Models\ProductStatus::pluck('name', 'id'))
+                             ->required()
+                             ->columns(4)
                     ]),
+                Forms\Components\Section::make('Product Tags')
+                    ->schema([
+                        Forms\Components\Grid::make(1) // Two-column layout
+                        ->schema([
+                            Forms\Components\Select::make('tags')
+                                ->hiddenLabel()
+                                ->relationship('productTags', 'name') // Uses the relationship
+                                ->multiple()
+                                ->preload()
+                                ->searchable(),
+                        ]),
+                    ])->compact(),
             ]);
     }
 
@@ -95,7 +103,7 @@ class ProductResource extends Resource
                     ->numeric()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('productCategory.name')
-                    ->numeric()
+                    ->toggleable(isToggledHiddenByDefault: true)
                     ->sortable(),
                 Tables\Columns\TextColumn::make('name')
                     ->searchable(),
@@ -108,6 +116,10 @@ class ProductResource extends Resource
                 Tables\Columns\TextColumn::make('productStatus.name')
                     ->badge()
                     ->color(fn($state, $record) => $record->productStatus->statusColor)
+                    ->sortable(),
+                BadgesColumn::make('productTags.name')
+                    ->label('Tags')
+                    ->toggleable(isToggledHiddenByDefault: true)
                     ->sortable(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
@@ -124,6 +136,10 @@ class ProductResource extends Resource
             ])
             ->filters([
                 Tables\Filters\TrashedFilter::make(),
+                SelectFilter::make('tag')
+                    ->label('Filter by Tag')
+                    ->relationship('productTags', 'name')
+                    ->preload(),
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
@@ -216,12 +232,10 @@ class ProductResource extends Resource
                                         TextEntry::make('quantity')
                                             ->label('Availability')
                                             ->badge()
-                                            ->color(fn(int $state): string =>
-                                            $state > 20 ? 'success' :
+                                            ->color(fn(int $state): string => $state > 20 ? 'success' :
                                                 ($state > 5 ? 'warning' : 'danger')
                                             )
-                                            ->icon(fn(int $state): string =>
-                                            $state > 20 ? 'heroicon-o-check-circle' :
+                                            ->icon(fn(int $state): string => $state > 20 ? 'heroicon-o-check-circle' :
                                                 ($state > 5 ? 'heroicon-o-clock' : 'heroicon-o-exclamation-circle')
                                             )
                                             ->size('lg')
@@ -234,6 +248,31 @@ class ProductResource extends Resource
                             ]),
                     ])
                     ->icon('heroicon-o-sparkles')
+                    ->collapsible()
+                    ->collapsed(false)
+                    ->extraAttributes([
+                        'class' => 'border border-slate-200 rounded-2xl p-6',
+                    ]),
+
+                Section::make('Product Tags')
+                    ->schema([
+                        RepeatableEntry::make('productTags')
+                        ->label('Tags')
+                            ->hiddenLabel()
+                            ->schema([
+                                TextEntry::make('name')
+                                    ->badge()
+                                    ->hiddenLabel()
+                                    ->color('secondary') // Use a different color for distinction
+                                    ->icon('heroicon-o-tag'), // Optional: Adds a tag icon
+                            ])
+                            ->grid(5) // Adjust to 4 per row for better spacing
+                            ->contained(false)
+                            ->extraAttributes([
+                                'class' => 'bg-gradient-to-r from-slate-50 to-zinc-50 p-4 rounded-xl shadow-sm',
+                            ]),
+                    ])
+                    ->icon('phosphor-paw-print')
                     ->collapsible()
                     ->collapsed(false)
                     ->extraAttributes([
