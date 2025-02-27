@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Product extends Model
@@ -33,5 +34,19 @@ class Product extends Model
     public function productStatus(): BelongsTo
     {
         return $this->belongsTo(ProductStatus::class);
+    }
+
+    public function productVariants()
+    {
+        return $this->hasMany(ProductVariant::class);
+    }
+
+    /**
+     * Get all available attributes that can be used for this product.
+     * This is a custom accessor method for the infolist.
+     */
+    public function getAvailableAttributesAttribute()
+    {
+        return ProductAttribute::all();
     }
 }

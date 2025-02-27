@@ -6,9 +6,19 @@ use App\Filament\Resources\ProductResource\Pages;
 use App\Filament\Resources\ProductResource\RelationManagers;
 use App\Models\Product;
 use Filament\Forms;
+use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
+use Filament\Infolists\Components\Grid;
+use Filament\Infolists\Components\RepeatableEntry;
+use Filament\Infolists\Components\Section;
+use Filament\Infolists\Components\TextEntry;
+use Filament\Infolists\Components\TextEntry\TextEntrySize;
+use Filament\Infolists\Infolist;
 use Filament\Resources\Resource;
 use Filament\Support\Colors\Color;
+use Filament\Support\View\Components\Modal;
+use Filament\Tables\Actions\Action;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
@@ -68,7 +78,7 @@ class ProductResource extends Resource
 
                             Forms\Components\Radio::make('product_status_id')
                                 ->label('Product Status')
-                                ->options(fn () => \App\Models\ProductStatus::pluck('name', 'id'))
+                                ->options(fn() => \App\Models\ProductStatus::pluck('name', 'id'))
                                 ->required()
                                 ->columns(3) // Arrange in 3 columns for better spacing
                         ]),
@@ -97,7 +107,7 @@ class ProductResource extends Resource
                     ->sortable(),
                 Tables\Columns\TextColumn::make('productStatus.name')
                     ->badge()
-                    ->color(fn ($state, $record) => $record->productStatus->statusColor)
+                    ->color(fn($state, $record) => $record->productStatus->statusColor)
                     ->sortable(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
@@ -117,6 +127,7 @@ class ProductResource extends Resource
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\ViewAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
@@ -131,6 +142,120 @@ class ProductResource extends Resource
             ->emptyStateActions([
                 Tables\Actions\CreateAction::make()
                     ->label('Add Product'),
+            ]);
+    }
+
+    public static function infolist(Infolist $infolist): Infolist
+    {
+        return $infolist
+            ->schema([
+                Section::make('Product Information')
+                    ->schema([
+                        Grid::make(['default' => 1, 'md' => 2])
+                            ->schema([
+                                TextEntry::make('name')
+                                    ->size(TextEntrySize::Large)
+                                    ->weight('bold'),
+
+                                TextEntry::make('price')
+                                    ->money('USD')
+                                    ->badge()
+                                    ->color('success'),
+                            ]),
+
+                        TextEntry::make('description')
+                            ->markdown()
+                            ->columnSpanFull(),
+
+                        Grid::make(['default' => 1, 'md' => 3])
+                            ->schema([
+                                TextEntry::make('quantity')
+                                    ->label('Base Stock')
+                                    ->badge()
+                                    ->color(fn(int $state): string => $state > 10 ? 'success' : ($state > 0 ? 'warning' : 'danger')),
+
+                                TextEntry::make('productCategory.name')
+                                    ->label('Category'),
+
+                                TextEntry::make('productStatus.name')
+                                    ->label('Status')
+                                    ->badge()
+                                    ->color(fn(string $state): string => match ($state) {
+                                        'Active' => 'success',
+                                        'Draft' => 'gray',
+                                        'Archived' => 'danger',
+                                        default => 'warning',
+                                    }),
+                            ]),
+                    ])
+                    ->collapsible(),
+
+                Section::make('Product Collections')
+                    ->schema([
+                        RepeatableEntry::make('productVariants')
+                            ->hiddenLabel()
+                            ->schema([
+                                Grid::make(['default' => 1, 'sm' => 4])
+                                    ->schema([
+                                        TextEntry::make('productAttribute.name')
+                                            ->label('Style Attribute')
+                                            ->badge()
+                                            ->color('primary')
+                                            ->icon('heroicon-o-tag'),
+                                        TextEntry::make('value')
+                                            ->label('Selection')
+                                            ->weight('semibold')
+                                            ->color('secondary')
+                                            ->size('lg'),
+                                        TextEntry::make('additional_price')
+                                            ->label('Additional')
+                                            ->prefix('+ $')
+                                            ->color('success')
+                                            ->icon('heroicon-o-currency-dollar')
+                                            ->weight('bold'),
+                                        TextEntry::make('quantity')
+                                            ->label('Availability')
+                                            ->badge()
+                                            ->color(fn(int $state): string =>
+                                            $state > 20 ? 'success' :
+                                                ($state > 5 ? 'warning' : 'danger')
+                                            )
+                                            ->icon(fn(int $state): string =>
+                                            $state > 20 ? 'heroicon-o-check-circle' :
+                                                ($state > 5 ? 'heroicon-o-clock' : 'heroicon-o-exclamation-circle')
+                                            )
+                                            ->size('lg')
+                                    ]),
+                            ])
+                            ->contained(true)
+                            ->columns(1)
+                            ->extraAttributes([
+                                'class' => 'bg-gradient-to-r from-slate-50 to-zinc-50 p-4 rounded-xl shadow-sm',
+                            ]),
+                    ])
+                    ->icon('heroicon-o-sparkles')
+                    ->collapsible()
+                    ->collapsed(false)
+                    ->extraAttributes([
+                        'class' => 'border border-slate-200 rounded-2xl p-6',
+                    ]),
+
+                Section::make('Available Attributes')
+                    ->schema([
+                        RepeatableEntry::make('availableAttributes')
+                            ->label('Attributes')
+                            ->hiddenLabel()
+                            ->schema([
+                                TextEntry::make('name')
+                                    ->badge()
+                                    ->color('primary'),
+                            ])
+                            ->grid(3)
+                            ->contained(false),
+                    ])
+                    ->collapsible()
+                    ->compact()
+                    ->collapsed(),
             ]);
     }
 

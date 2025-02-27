@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\User;
+
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
@@ -21,6 +22,11 @@ class DatabaseSeeder extends Seeder
             'phone' => '79274486977',
         ]);
 
-        $this->call([ProductAttributesSeeder::class]);
+        $this->call([
+            ProductAttributesSeeder::class,
+            UserSeeder::class,
+            VendorSeeder::class,
+            ProductStatusSeeder::class
+        ]);
     }
 }
