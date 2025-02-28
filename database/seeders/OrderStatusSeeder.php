@@ -2,32 +2,30 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Seeder;
 use App\Models\OrderStatus;
+use Illuminate\Database\Seeder;
 
 class OrderStatusSeeder extends Seeder
 {
-    public function run()
+    public function run(): void
     {
-        // Array of real-life order statuses
         $statuses = [
-            'Pending',
+            'Pending Payment',
             'Processing',
+            'Confirmed',
             'Shipped',
             'Out for Delivery',
             'Delivered',
-            'Canceled',
-            'Returned',
+            'Cancelled',
             'Refunded',
             'Failed',
-            'Completed'
+            'On Hold',
         ];
 
-        // Loop through each status and create a record
-        foreach ($statuses as $status) {
-            OrderStatus::create([
-                'name' => $status
-            ]);
-        }
+        OrderStatus::insert(array_map(fn (string $name) => [
+            'name'       => $name,
+            'created_at' => now(),
+            'updated_at' => now(),
+        ], $statuses));
     }
 }

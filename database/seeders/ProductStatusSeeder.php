@@ -2,29 +2,21 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Seeder;
 use App\Models\ProductStatus;
+use Illuminate\Database\Seeder;
 
 class ProductStatusSeeder extends Seeder
 {
-    public function run()
+    public function run(): void
     {
         $statuses = [
-            ['name' => 'Draft'],
-            ['name' => 'Pending Approval'],
-            ['name' => 'Active'],
-            ['name' => 'Out of Stock'],
-            ['name' => 'Backordered'],
-            ['name' => 'Discontinued'],
-            ['name' => 'Rejected'],
-            ['name' => 'Hidden'],
-            ['name' => 'Pre-Order'],
-            ['name' => 'Archived'],
+            ['name' => 'Active', 'created_at' => now(), 'updated_at' => now()],
+            ['name' => 'Inactive', 'created_at' => now(), 'updated_at' => now()],
+            ['name' => 'Out Of Stock', 'created_at' => now(), 'updated_at' => now()],
+            ['name' => 'Discontinued', 'created_at' => now(), 'updated_at' => now()],
+            ['name' => 'Coming Soon', 'created_at' => now(), 'updated_at' => now()],
         ];
 
-        foreach ($statuses as $status) {
-            ProductStatus::firstOrCreate($status);
-        }
+        ProductStatus::insert($statuses);
     }
 }
-

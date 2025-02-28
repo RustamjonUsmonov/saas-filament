@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Filament\Support\Colors\Color;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class OrderStatus extends Model
 {
@@ -11,20 +12,25 @@ class OrderStatus extends Model
         'name'
     ];
 
+    public function orders(): HasMany
+    {
+        return $this->hasMany(Order::class);
+    }
+
     public function getStatusColorAttribute()
     {
         return match (strtolower($this->name)) {
-            'pending' => Color::Yellow,         // 🟡 Yellow
-            'processing' => Color::Amber,       // 🟠 Amber
-            'shipped' => Color::Violet,          // 🟢 Green
-            'out for delivery' => Color::Blue,  // 🔵 Blue
-            'delivered' => Color::Teal,         // 🟢 Teal
-            'canceled' => Color::Stone,           // 🔴 Red
-            'returned' => Color::Purple,        // 🟣 Purple
-            'refunded' => Color::Neutral,          // ⚪ Gray
-            'failed' => Color::Red,             // 🔴 Red (Failed)
-            'completed' => Color::Green,        // 🟢 Green
-            default => Color::Gray,             // ⚪ Default Gray
+            'pending payment' => Color::Yellow,    // 🟡 Yellow
+            'processing' => Color::Amber,          // 🟠 Amber
+            'confirmed' => Color::Green,           // 🟢 Green
+            'shipped' => Color::Violet,            // 🟣 Violet
+            'out for delivery' => Color::Blue,     // 🔵 Blue
+            'delivered' => Color::Teal,            // 🟢 Teal
+            'cancelled' => Color::Stone,           // ⚫ Stone (Neutral)
+            'refunded' => Color::Neutral,          // ⚪ Neutral (Gray)
+            'failed' => Color::Red,                // 🔴 Red
+            'on hold' => Color::Orange,            // 🟠 Orange
+            default => Color::Gray,                // ⚪ Default Gray
         };
     }
 }

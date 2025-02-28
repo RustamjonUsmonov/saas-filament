@@ -93,8 +93,7 @@ class ProductVariantResource extends Resource
                     ->searchable()
                     ->sortable()
                     ->wrap()
-                    ->weight('medium')
-                    ->extraCellAttributes(['class' => 'bg-gray-50']),
+                    ->weight('medium'),
 
                 Tables\Columns\TextColumn::make('productAttribute.name')
                     ->label('Attribute')

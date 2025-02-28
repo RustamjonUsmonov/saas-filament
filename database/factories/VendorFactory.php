@@ -4,27 +4,35 @@ namespace Database\Factories;
 
 use App\Models\User;
 use App\Models\Vendor;
+use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Database\Eloquent\Factories\Factory;
-use Illuminate\Support\Str;
 
-/**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Vendor>
- */
 class VendorFactory extends Factory
 {
-    /**
-     * Define the model's default state.
-     *
-     * @return array<string, mixed>
-     */
+    protected $model = Vendor::class;
+
     public function definition(): array
     {
-        $users = User::pluck('id')->toArray();
-
         return [
-            'user_id' => $users[array_rand($users)],
-            'name' => 'Vendor ' . fake('ru_RU')->company(),
-            'description' => fake('ru_RU')->paragraphs(asText: true),
+            'name'        => fake()->name(),
+            'description' => fake()->text(),
+            'created_at'  => Carbon::now(),
+            'updated_at'  => Carbon::now(),
+
+            'user_id' => User::factory(),
         ];
+    }
+
+
+    public function configure(): static
+    {
+        $images = collect(Storage::files('demo-images'));
+
+        return $this->afterCreating(function (Vendor $vendor) use ($images) {
+            $vendor->addMediaFromDisk($images->random())
+                ->preservingOriginal()
+                ->toMediaCollection('logo');
+        });
     }
 }

@@ -2,40 +2,121 @@
 
 namespace Database\Seeders;
 
-use App\Models\Order;
-use App\Models\OrderStatus;
-use App\Models\ProductVariant;
+use Carbon\Carbon;
 use App\Models\User;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use App\Models\Order;
+use App\Models\Product;
+use App\Models\OrderItem;
+use App\Models\OrderReturn;
+use App\Models\OrderRefund;
+use App\Models\OrderStatus;
+use App\Models\OrderShipment;
 use Illuminate\Database\Seeder;
+use App\Models\OrderReturnStatus;
+use App\Models\OrderRefundStatus;
+use App\Models\OrderShipmentStatus;
 
 class OrderSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     */
     public function run(): void
     {
         $users = User::pluck('id')->toArray();
+        $products = Product::with('productVariants')->get();
         $statuses = OrderStatus::pluck('id')->toArray();
+        /*$returnStatuses = OrderReturnStatus::pluck('id', 'name')->toArray();
+        $refundStatuses = OrderRefundStatus::pluck('id', 'name')->toArray();
+        $orderShipmentStatuses = OrderShipmentStatus::pluck('id')->toArray();*/
 
-        // Create 10 orders
-        foreach (range(1, 10) as $index) {
-            $order = Order::create([
-                'user_id' => $users[array_rand($users)], // Random user ID
-                'order_status_id' => $statuses[array_rand($statuses)], // Random order status
-                'total_amount' => fake()->randomFloat(2, 20, 500), // Random total amount between 20 and 500
-            ]);
+        $orders = [];
+        $orderItems = [];
+        $shipments = [];
+        $returns = [];
+        $refunds = [];
 
-            // Create 1 to 3 order items for each order
-            foreach (range(1, rand(1, 3)) as $itemIndex) {
-                $order->items()->create([
-                    'product_id' => 1, // Random product ID (modify as needed)
-                    'product_variant_id' => rand(1, 2), // Random product variant ID (modify as needed)
-                    'quantity' => rand(1, 5), // Random quantity between 1 and 5
-                    'price' => fake()->randomFloat(2, 5, 100), // Random price per item between 5 and 100
-                ]);
+        for ($i = 0; $i < 100; $i++) {
+            $orderId = $i + 1;
+            $createdAt = Carbon::now()->subDays(rand(1, 90));
+            $totalAmount = 0;
+
+            $orders[] = [
+                'id'           => $orderId,
+                'user_id'      => $users[array_rand($users)],
+                'status_id'    => $statuses[array_rand($statuses)],
+                'total_amount' => 0, // Will update after calculating items
+                'created_at'   => $createdAt,
+                'updated_at'   => $createdAt,
+            ];
+
+            $orderProducts = $products->random(rand(1, 5));
+            foreach ($orderProducts as $product) {
+                $quantity = rand(1, 5);
+                $variant = $product->productVariants->count() > 0 ? $product->productVariants->random() : null;
+                $price = $product->price + ($variant ? ($variant->additional_price ?? 0) : 0);
+
+                $orderItems[] = [
+                    'order_id'           => $orderId,
+                    'product_id'         => $product->id,
+                    'product_variant_id' => $variant ? $variant->id : null,
+                    'quantity'           => $quantity,
+                    'price'              => $price,
+                    'created_at'         => $createdAt,
+                    'updated_at'         => $createdAt,
+                ];
+
+                $totalAmount += $price * $quantity;
             }
+
+            // Update order total
+            $orders[$i]['total_amount'] = $totalAmount;
+
+            /*if (rand(1, 100) <= 70) {
+                $shippedAt = Carbon::parse($createdAt)->addDays(rand(1, 3));
+                $shipments[] = [
+                    'order_id'        => $orderId,
+                    'tracking_number' => strtoupper(fake()->bothify('??##????##')),
+                    'carrier'         => fake()->randomElement(['FedEx', 'UPS', 'DHL', 'USPS']),
+                    'order_shipment_status_id' => $orderShipmentStatuses[array_rand($orderShipmentStatuses)],
+                    'shipped_at'      => $shippedAt,
+                    'delivered_at'    => rand(1, 100) <= 60 ? $shippedAt->addDays(rand(2, 5)) : null,
+                    'created_at'      => $createdAt,
+                    'updated_at'      => $createdAt,
+                ];
+            }*/
         }
+
+        Order::insert($orders);
+        OrderItem::insert($orderItems);
+        //OrderShipment::insert($shipments);
+
+        $allOrderItems = OrderItem::pluck('id')->toArray();
+        $returnItemIds = array_rand(array_flip($allOrderItems), (int) (count($allOrderItems) * 0.2));
+
+        /*foreach ($returnItemIds as $itemId) {
+            $returnId = count($returns) + 1;
+            $createdAt = Carbon::now()->subDays(rand(1, 30));
+
+            $returns[] = [
+                'id'            => $returnId,
+                'order_item_id' => $itemId,
+                'reason'        => fake()->sentence(),
+                'order_return_status_id' => $returnStatuses[array_rand($returnStatuses)],
+                'created_at'    => $createdAt,
+                'updated_at'    => $createdAt,
+            ];
+
+            if (rand(1, 100) <= 60) {
+                $refunds[] = [
+                    'order_return_id' => $returnId,
+                    'amount'          => rand(100, 1000),
+                    'order_refund_status_id' => $refundStatuses[array_rand($refundStatuses)],
+                    'processed_at'    => $createdAt->addDays(rand(1, 5)),
+                    'created_at'      => $createdAt,
+                    'updated_at'      => $createdAt,
+                ];
+            }
+        }*/
+
+        /*OrderReturn::insert($returns);
+        OrderRefund::insert($refunds);*/
     }
 }
