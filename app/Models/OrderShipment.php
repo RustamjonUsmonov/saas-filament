@@ -24,6 +24,11 @@ class OrderShipment extends Model
         return $this->belongsTo(Order::class);
     }
 
+    public function status(): BelongsTo
+    {
+        return $this->belongsTo(OrderShipmentStatus::class,'order_status_id');
+    }
+
     protected function casts(): array
     {
         return [
