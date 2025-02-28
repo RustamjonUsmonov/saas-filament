@@ -3,9 +3,9 @@
 namespace Database\Seeders;
 
 use App\Models\User;
-use App\Models\Role;
 use App\Models\UserAddress;
 use Illuminate\Database\Seeder;
+use Spatie\Permission\Models\Role;
 
 class UserAddressSeeder extends Seeder
 {

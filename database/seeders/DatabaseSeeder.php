@@ -2,7 +2,6 @@
 
 namespace Database\Seeders;
 
-// use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -18,39 +17,39 @@ class DatabaseSeeder extends Seeder
             RolePermissionSeeder::class,
 
             OrderStatusSeeder::class,
-           // OrderRefundStatusSeeder::class,
-            //OrderReturnStatusSeeder::class,
-            //OrderShipmentStatusSeeder::class,
-            //PaymentMethodSeeder::class,
+            OrderRefundStatusSeeder::class,
+            OrderReturnStatusSeeder::class,
+            OrderShipmentStatusSeeder::class,
+            PaymentMethodSeeder::class,
             ProductStatusSeeder::class,
-            //EmailCampaignStatusSeeder::class,
+            EmailCampaignStatusSeeder::class,
 
             UserSeeder::class,
-            //UserAddressSeeder::class,
+            UserAddressSeeder::class,
 
             VendorSeeder::class,
 
             ProductCategorySeeder::class,
             ProductAttributeSeeder::class,
             ProductSeeder::class,
-            //ProductReviewSeeder::class,
+            ProductReviewSeeder::class,
 
             OrderSeeder::class,
 
-            //PaymentVendorSeeder::class,
-            //VendorSettingsSeeder::class,
-            //VendorPaymentsSeeder::class,
-            //VendorReviewsSeeder::class,
+            PaymentVendorSeeder::class,
+            VendorSettingsSeeder::class,
+            VendorPaymentsSeeder::class,
+            VendorReviewsSeeder::class,
 
-            //CouponSeeder::class,
-            //ReviewSeeder::class,
-            //WishlistSeeder::class,
+            CouponSeeder::class,
+            ReviewSeeder::class,
+            WishlistSeeder::class,
 
-            //CartSeeder::class,
-            //CartItemSeeder::class,
+            CartSeeder::class,
+            CartItemSeeder::class,
 
-            //EmailCampaignSeeder::class,
-            //PromotionSeeder::class,
+            EmailCampaignSeeder::class,
+            PromotionSeeder::class,
         ]);
     }
 }
