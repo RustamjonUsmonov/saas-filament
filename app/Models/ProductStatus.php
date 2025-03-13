@@ -17,9 +17,9 @@ class ProductStatus extends Model
             'draft' => Color::Yellow,         // 🟡 Yellow
             'pending approval' => Color::Amber, // 🟠 Amber (Warm Orange)
             'active' => Color::Green,         // 🟢 Green (Mid-tone)
-            'out of stock' => Color::Red,     // 🔴 Red (Mid-tone)
+            'out of stock' => Color::Amber,     // 🔴 Red (Mid-tone)
             'backordered' => Color::Purple,   // 🟣 Purple (Indicates waiting)
-            'discontinued' => Color::Gray,    // ⚪ Gray (Neutral tone)
+            'discontinued' => Color::Stone,    // ⚪ Gray (Neutral tone)
             'rejected' => Color::Red,         // 🔴 Darker Red (More severe)
             'hidden' => Color::Slate,         // 🌑 Slate Gray (Subtle)
             'pre-order' => Color::Blue,       // 🔵 Blue (Trustworthy)

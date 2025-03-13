@@ -23,9 +23,9 @@ class OrderSeeder extends Seeder
         $users = User::pluck('id')->toArray();
         $products = Product::with('productVariants')->get();
         $statuses = OrderStatus::pluck('id')->toArray();
-        /*$returnStatuses = OrderReturnStatus::pluck('id', 'name')->toArray();
+        $returnStatuses = OrderReturnStatus::pluck('id', 'name')->toArray();
         $refundStatuses = OrderRefundStatus::pluck('id', 'name')->toArray();
-        $orderShipmentStatuses = OrderShipmentStatus::pluck('id')->toArray();*/
+        $orderShipmentStatuses = OrderShipmentStatus::pluck('id')->toArray();
 
         $orders = [];
         $orderItems = [];
@@ -69,7 +69,7 @@ class OrderSeeder extends Seeder
             // Update order total
             $orders[$i]['total_amount'] = $totalAmount;
 
-            /*if (rand(1, 100) <= 70) {
+            if (rand(1, 100) <= 70) {
                 $shippedAt = Carbon::parse($createdAt)->addDays(rand(1, 3));
                 $shipments[] = [
                     'order_id'        => $orderId,
@@ -81,17 +81,17 @@ class OrderSeeder extends Seeder
                     'created_at'      => $createdAt,
                     'updated_at'      => $createdAt,
                 ];
-            }*/
+            }
         }
 
         Order::insert($orders);
         OrderItem::insert($orderItems);
-        //OrderShipment::insert($shipments);
+        OrderShipment::insert($shipments);
 
         $allOrderItems = OrderItem::pluck('id')->toArray();
         $returnItemIds = array_rand(array_flip($allOrderItems), (int) (count($allOrderItems) * 0.2));
 
-        /*foreach ($returnItemIds as $itemId) {
+        foreach ($returnItemIds as $itemId) {
             $returnId = count($returns) + 1;
             $createdAt = Carbon::now()->subDays(rand(1, 30));
 
@@ -114,9 +114,9 @@ class OrderSeeder extends Seeder
                     'updated_at'      => $createdAt,
                 ];
             }
-        }*/
+        }
 
-        /*OrderReturn::insert($returns);
-        OrderRefund::insert($refunds);*/
+        OrderReturn::insert($returns);
+        OrderRefund::insert($refunds);
     }
 }

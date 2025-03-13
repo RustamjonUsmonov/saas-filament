@@ -26,6 +26,10 @@ class OrderResource extends Resource
     protected static ?string $navigationIcon = 'phosphor-package';
     protected static ?string $navigationGroup = 'Order Management';
 
+    public static function canCreate(): bool
+    {
+        return false;
+    }
 
     public static function form(Form $form): Form
     {
@@ -83,10 +87,8 @@ class OrderResource extends Resource
             ])->emptyStateIcon('heroicon-o-shopping-bag')
             ->emptyStateHeading('No Orders Found')
             ->emptyStateDescription('Create your first order to get started.')
-            ->emptyStateActions([
-                Tables\Actions\CreateAction::make()
-                    ->label('Add Order'),
-            ]);
+            ->recordUrl(null) // Remove default edit URL
+            ->recordAction('view') ;
     }
 
     public static function infolist(Infolist $infolist): Infolist
