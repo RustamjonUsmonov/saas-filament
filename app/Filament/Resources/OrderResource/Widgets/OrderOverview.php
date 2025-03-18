@@ -6,29 +6,35 @@ use App\Models\Order;
 use Filament\Widgets\StatsOverviewWidget as BaseWidget;
 use Filament\Widgets\StatsOverviewWidget\Stat;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Cache;
 
 class OrderOverview extends BaseWidget
 {
     protected function getStats(): array
     {
-        // Get total orders and revenue
-        $totalOrders = Order::count();
-        $totalRevenue = Order::sum('total_amount');
+        [$totalOrders, $chartData, $deliveredTodayOrders, $pendingOrders, $totalRevenue] =
+            Cache::remember('order-overview', 60, function () {
+                // Get total orders and revenue
+                $totalOrders = Order::count();
+                $totalRevenue = Order::sum('total_amount');
 
-        // Get pending orders
-        $pendingOrders = Order::whereHas('status', fn($q) => $q->where('name', 'Processing'))->count();
-        $deliveredTodayOrders = Order::whereHas('status', fn($q) => $q->where('name', 'Delivered')->where('updated_at', '>=', now()->startOfDay()))->count();
+                // Get pending orders
+                $pendingOrders = Order::whereHas('status', fn($q) => $q->where('name', 'Processing'))->count();
+                $deliveredTodayOrders = Order::whereHas('status', fn($q) => $q->where('name', 'Delivered')->where('updated_at', '>=', now()->startOfDay()))->count();
 
-        // Get last 7 days of order count for chart
-        $orderTrends = Order::where('created_at', '>=', Carbon::now()->subDays(7))
-            ->selectRaw('DATE(created_at) as date, COUNT(*) as count')
-            ->groupBy('date')
-            ->orderBy('date', 'ASC')
-            ->pluck('count')
-            ->toArray();
+                // Get last 7 days of order count for chart
+                $orderTrends = Order::where('created_at', '>=', Carbon::now()->subDays(7))
+                    ->selectRaw('DATE(created_at) as date, COUNT(*) as count')
+                    ->groupBy('date')
+                    ->orderBy('date', 'ASC')
+                    ->pluck('count')
+                    ->toArray();
 
-        // Ensure chart always has 7 values (default to 0 if missing)
-        $chartData = array_pad($orderTrends, -7, 0);
+                // Ensure chart always has 7 values (default to 0 if missing)
+                $chartData = array_pad($orderTrends, -7, 0);
+
+                return [$totalOrders, $chartData, $deliveredTodayOrders, $pendingOrders, $totalRevenue];
+            });
 
         return [
             Stat::make('Total Orders', $totalOrders)
