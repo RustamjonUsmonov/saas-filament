@@ -13,11 +13,16 @@ class OrderReturn extends Model
     protected $fillable = [
         'order_item_id',
         'reason',
-        'status',
+        'order_return_status_id',
     ];
 
     public function orderItem(): BelongsTo
     {
         return $this->belongsTo(OrderItem::class);
+    }
+
+    public function returnStatus(): BelongsTo
+    {
+        return $this->belongsTo(OrderReturnStatus::class, 'order_return_status_id');
     }
 }
