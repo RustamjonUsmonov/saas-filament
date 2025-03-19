@@ -3,15 +3,14 @@
 namespace App\Providers\Filament;
 
 use App\Filament\User\Pages\UserDashboard;
+use App\Filament\User\Widgets\InspireWidget;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
-use Filament\Pages;
 use Filament\Panel;
 use Filament\PanelProvider;
 use Filament\Support\Colors\Color;
-use Filament\Widgets;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use Illuminate\Cookie\Middleware\EncryptCookies;
 use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
@@ -39,8 +38,7 @@ class UserPanelProvider extends PanelProvider
             ])
             ->discoverWidgets(in: app_path('Filament/User/Widgets'), for: 'App\\Filament\\User\\Widgets')
             ->widgets([
-                Widgets\AccountWidget::class,
-                Widgets\FilamentInfoWidget::class,
+                InspireWidget::class
             ])
             ->middleware([
                 EncryptCookies::class,
@@ -53,7 +51,10 @@ class UserPanelProvider extends PanelProvider
                 DisableBladeIconComponents::class,
                 DispatchServingFilamentEvent::class,
             ])->plugins([
-                \Filafly\PhosphorIconReplacement::make()
+                \Filafly\PhosphorIconReplacement::make(),
+                \pxlrbt\FilamentEnvironmentIndicator\EnvironmentIndicatorPlugin::make()
+                    ->showBorder(false)
+                    ->visible(true),
             ])
             ->breadcrumbs(false)
             ->authMiddleware([
