@@ -56,6 +56,9 @@ class AdminPanelProvider extends PanelProvider
                 DispatchServingFilamentEvent::class,
             ])->plugins([
                 \BezhanSalleh\FilamentShield\FilamentShieldPlugin::make(),
+                \pxlrbt\FilamentEnvironmentIndicator\EnvironmentIndicatorPlugin::make()
+                    ->showBorder(false)
+                    ->visible(true),
                 \Filafly\PhosphorIconReplacement::make()
             ])->authMiddleware([
                 Authenticate::class,

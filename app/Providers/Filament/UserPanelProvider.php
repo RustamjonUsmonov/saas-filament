@@ -31,6 +31,7 @@ class UserPanelProvider extends PanelProvider
             ])
             ->spa()
             ->login()
+            ->topNavigation()
             ->discoverResources(in: app_path('Filament/User/Resources'), for: 'App\\Filament\\User\\Resources')
             ->discoverPages(in: app_path('Filament/User/Pages'), for: 'App\\Filament\\User\\Pages')
             ->pages([

@@ -14,7 +14,7 @@ class ListUserAddresses extends ListRecords
     {
         return [
             Actions\CreateAction::make()
-            ->label('Add new'),
+                ->label('Add new'),
         ];
     }
 }
